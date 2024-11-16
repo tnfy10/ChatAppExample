@@ -14,9 +14,11 @@
         android:theme="@style/Theme.ChatAppExample"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".feature.main.MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
-            android:theme="@style/Theme.ChatAppExample">
+            android:theme="@style/Theme.ChatAppExample"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
