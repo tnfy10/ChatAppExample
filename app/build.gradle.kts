@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,10 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
+}
+
+fun getLocalPropertyValue(key: String): String {
+    return gradleLocalProperties(rootDir, providers).getProperty(key)
 }
 
 android {
@@ -20,6 +26,28 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders["kakaoNativeAppKey"] = getLocalPropertyValue("kakao.native.app.key")
+
+        buildConfigField(
+            "String",
+            "GOOGLE_SIGN_IN_SERVER_CLIENT_ID",
+            "\"${getLocalPropertyValue("google.sign.in.server.client.id")}\""
+        )
+        buildConfigField(
+            "String",
+            "KAKAO_NATIVE_APP_KEY",
+            "\"${getLocalPropertyValue("kakao.native.app.key")}\""
+        )
+    }
+
+    signingConfigs {
+        create("releaseSigningConfig") {
+            storeFile = signingConfigs.getByName("debug").storeFile
+            keyAlias = signingConfigs.getByName("debug").keyAlias
+            keyPassword = signingConfigs.getByName("debug").keyPassword
+            storePassword = signingConfigs.getByName("debug").storePassword
+        }
     }
 
     buildTypes {
@@ -40,6 +68,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -75,9 +104,17 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.kakao.user)
+
+    implementation(libs.androidx.core.splashscreen)
 }

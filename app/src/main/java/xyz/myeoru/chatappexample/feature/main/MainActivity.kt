@@ -1,5 +1,7 @@
 package xyz.myeoru.chatappexample.feature.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,6 +32,16 @@ import xyz.myeoru.chatappexample.ui.theme.ChatAppExampleTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    companion object {
+        fun startActivityWithClearAllTasks(context: Context) {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            context.startActivity(intent)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
